@@ -15,7 +15,8 @@ KB1 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 kb1_1 = KeyboardButton("/help")
 kb1_2 = KeyboardButton("/🌠")
 kb1_3 = KeyboardButton("/🌤")
-KB1.add(kb1_1)
+kb1_4 = KeyboardButton("/✨")
+KB1.add(kb1_1).insert(kb1_4)
 KB1.add(kb1_3).insert(kb1_2)
 
 KB3 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -29,8 +30,13 @@ user_text = None
 def gen_photo_url(word: str) -> str:
     return "https://yandex.ru/images/search?text=" + word
 
+
 def gen_weather_outer(city):
     return "https://yandex.ru/weather/ru-RU/" + city + "/details"
+
+
+def gen_video_url(word):
+    return "https://www.youtube.com/results?search_query=" + word
 
 
 @dp.message_handler(commands=['start'])
@@ -63,6 +69,15 @@ async def echo(message: types.Message):
         else:
             await bot.send_message(chat_id=message.from_user.id,
                                    text=gen_weather_outer(user_text))
+            await message.delete()
+            user_text = None
+    elif message.text == '/✨':
+        if user_text is None:
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text="вы еще ничего не ввели")
+        else:
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text=gen_video_url(user_text))
             await message.delete()
             user_text = None
 
